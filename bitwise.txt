@@ -1,0 +1,78 @@
+Structure du projet
+.
+├── bin/
+│   └── convert.php
+└── src/
+    └── Converter.php
+
+📄 src/Converter.php
+<?php
+namespace App;
+
+class Converter
+{
+    private int $number;
+
+    public function __construct(int $number)
+    {
+        $this->number = $number;
+    }
+
+    public function getDecimal(): int
+    {
+        return $this->number;
+    }
+
+    public function getBinary(): string
+    {
+        return decbin($this->number);
+    }
+
+    public function getHexa(): string
+    {
+        return strtoupper(dechex($this->number));
+    }
+
+    public function display(): void
+    {
+        echo "Décimal : " . $this->getDecimal() . PHP_EOL;
+        echo "Binaire : " . $this->getBinary() . PHP_EOL;
+        echo "Hexa    : " . $this->getHexa() . PHP_EOL;
+    }
+}
+
+📄 bin/convert.php
+#!/usr/bin/env php
+<?php
+require __DIR__ . '/../src/Converter.php';
+
+use App\Converter;
+
+// Vérifier l’argument
+if ($argc < 2) {
+    fwrite(STDERR, "Usage: php bin/convert.php <entier>\n");
+    exit(1);
+}
+
+$input = $argv[1];
+
+if (!ctype_digit($input) && !(str_starts_with($input, '-') && ctype_digit(substr($input, 1)))) {
+    fwrite(STDERR, "Erreur: merci de fournir un entier valide.\n");
+    exit(1);
+}
+
+$number = (int)$input;
+
+// Créer l’objet et afficher
+$converter = new Converter($number);
+$converter->display();
+
+⚙️ Exécution
+php bin/convert.php 42
+
+
+📌 Résultat attendu :
+
+Décimal : 42
+Binaire : 101010
+Hexa    : 2A
